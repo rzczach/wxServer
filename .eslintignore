@@ -1,0 +1,9 @@
+output
+build
+node_modules
+npm-debug/log
+src/libs/**/*
+edit_modules
+src/modules/book/flipbook/jquery.js
+src/modules/book/flipbook/turn.js
+src/modules/book/flipbook/touch.js

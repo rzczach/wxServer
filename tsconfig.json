@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "target": "es6", // 根据项目需求选择目标ECMAScript版本
+        "module": "commonjs", // 对应Koa2使用的CommonJS模块系统
+        "outDir": "./dist", // 编译后的JavaScript文件输出目录
+        "strict": true, // 启用严格类型检查
+        "esModuleInterop": true, // 允许默认导出的 CommonJS 模块与 ES6 导入语法更好地交互
+        "sourceMap": true, // 生成相应的.map文件便于调试
+        "resolveJsonModule": true, // 支持 import json 文件
+        "baseUrl": ".", // 设置模块解析的基本路径
+        "paths": {}, // 如有模块别名，可以在这里设置（例如："@/*": ["src/*"]）
+        "types": [
+            "node",
+            "koa",
+            "koa-router",
+            "mysql2",
+            "sequelize"
+        ], // 添加相关类型定义
+        "typeRoots": [
+            "./node_modules/@types",
+            "./typings"
+        ], // 指定类型声明文件查找路径
+        // 下面是适用于 Sequelize 的一些额外选项
+        "experimentalDecorators": true, // 启用装饰器（Sequelize Models 中需要用到）
+        "emitDecoratorMetadata": true, // 为装饰器提供元数据以支持反射
+        "skipLibCheck": true, // 跳过对声明文件的类型检查以提高编译速度
+    },
+    "include": [
+        "src/**/*.ts"
+    ], // 指定编译哪些文件，这里是src目录下的所有.ts文件
+    "exclude": [
+        "node_modules",
+        "dist"
+    ] // 排除不需要编译的文件夹
+}
