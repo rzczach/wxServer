@@ -1,0 +1,9 @@
+node_modules
+output
+npm-debug/log
+.idea
+.vscode
+/index.html
+yarn-error.log
+package-lock.json
+.DS_Store
