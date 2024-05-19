@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/index'; // 引入数据库连接实例
 
-interface UserInfo {
+export interface UserInfo {
     userId: number;
     username: string;
     email: string;
@@ -44,11 +44,19 @@ async function findUsers(): Promise<UserInfo[]> {
     return list;
 }
 
-// 查找某个用户
+// 通过用户id查找某个用户
 async function findUserById(userId: number): Promise<UserInfo | null> {
     const id = Number(userId);
     const userInstance = await Users.findOne({
         where: { userId: id },
+    });
+    return userInstance ? userInstance.toJSON() : null;
+}
+// 通过手机号查找某个用户
+async function findUserByphone(phoneNumber: number): Promise<UserInfo | null> {
+    const phone = Number(phoneNumber);
+    const userInstance = await Users.findOne({
+        where: { phoneNumber: phone },
     });
     return userInstance ? userInstance.toJSON() : null;
 }
@@ -97,11 +105,13 @@ async function deleteUser(userId: number): Promise<any> {
     }
 }
 export {
+    Users,
     findUsers,
     findUserById,
     updateUser,
     createUser,
     deleteUser,
+    findUserByphone,
 };
 
 // 根据现有代码，请实现 查找某个用户、修改某个用户、新增用户、删除用户

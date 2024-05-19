@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-// import { to } from 'ks-utils';
 import { to } from '../../src/utils';
 import {
     findUsers,
     findUserById,
+    findUserByphone,
     updateUser,
     createUser,
     deleteUser,
@@ -27,10 +27,23 @@ async function getUserListController(context: any, next: any) {
 }
 
 async function getUserByIdController(context: any, next: any) {
-    const { id } = context.request.query;
-    console.log('id', id);
-    const [error, res] = await to<any>(findUserById, id);
-    console.log('error', error);
+    const { userId } = context.request.query;
+    const res = await findUserById(userId);
+   
+    if (res) {
+        context.body = {
+            ...res,
+            message: '查询成功'
+        };
+    } else {
+        context.throw(res);
+    }
+    next();
+}
+
+async function getUserByPhoneController(context: any, next: any) {
+    const { phoneNumber } = context.request.query;
+    const [error, res] = await to<any>(findUserByphone, phoneNumber);
     if (res) {
         context.body = {
             info: res,
@@ -58,7 +71,6 @@ async function updateUserController(context: any, next: any) {
     next();
 }
 async function createUserController(context: any, next: any) {
-
     const { username, password, phoneNumber, email, profileImage, ...rest } = context.request.body;
     if (!username) {
         context.throw(new Error('未填写用户名称'));
@@ -113,39 +125,12 @@ async function deleteUserController (context: any, next: any) {
         next();
     }
 }
-//     const [error, res] = await to<CreatePage>(updatePage, params);
-
-//     if (error) {
-//         context.throw(error);
-//     }
-
-//     const pageId = res.insertedId;
-//     context.body = {
-//         message: '修改页面成功！',
-//         id: pageId,
-//     };
-//     next();
-// }
-
-// async function deletePageController(context, next) {
-//     const { _id } = context.request.body;
-//     const params = { _id: new ObjectID(_id) };
-//     const [error] = await to(deletePage, params);
-
-//     if (error) {
-//         context.throw(error);
-//     }
-
-//     context.body = {
-//         message: '页面删除成功！',
-//     };
-//     next();
-// }
 
 export {
     getUserListController,
     getUserByIdController,
     updateUserController,
     createUserController,
-    deleteUserController
+    deleteUserController,
+    getUserByPhoneController
 };
