@@ -23,6 +23,8 @@ const Product = sequelize.define('Product', {
     uploadTime: DataTypes.DATE,
     detail: DataTypes.STRING,
     deliveryInfo: DataTypes.STRING,
+    materialText: DataTypes.STRING,
+    packing: DataTypes.STRING,
 }, {
     tableName: 'product',
     timestamps: true, // 保持timestamps为true以启用createdAt和updatedAt

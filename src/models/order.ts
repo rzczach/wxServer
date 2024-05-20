@@ -64,7 +64,7 @@ const Order = sequelize.define('Order', {
         defaultValue: 'Unpaid' // DEFAULT 'Unpaid'
     },
     shippingAddressId: {
-        type: DataTypes.STRING || DataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         references: {
             model: UserAddress, // 假设 UserAddresses 模型已定义
             key: 'addressId'

@@ -12,7 +12,7 @@ import {
 
 async function getProductController(context: any, next: any) {
     const res = await findProduct();
-   
+    // console.log('res',res);
     if (res) {
         context.body = {
             list: res,

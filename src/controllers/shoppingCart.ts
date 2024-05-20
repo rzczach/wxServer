@@ -11,22 +11,45 @@ import {
     createShoppingCard,
     deleteShoppingCard
 } from '../models/shoppingCart';
+import {
+    findProductById
+} from '../models/productModel';
+import { ShoppingCardData } from 'src/types/shoppingCart';
+import { ProductInfo } from 'src/types/product';
 
 async function getShoppingCardController(context: any, next: any) {
-    const [error, res] = await to<any>(findShoppingCard);
-    if (error) {
-        context.throw(error);
+    try {
+        const { userId } = context.request.query;
+        const shoppingCards = await findShoppingCardByUserId(userId);
+
+        if (shoppingCards && shoppingCards.length > 0) {
+            // 收集包含cartId和productId的查询Promise
+            const productPromisesWithCartIds = shoppingCards.map(async (card) => {
+                const product = await findProductById(card.productId);
+                // 将cartId与product信息合并
+                return {
+                    ...product,
+                    selected: false,
+                    cartId: card.cartId, // 添加cartId字段
+                };
+            });
+
+            // 等待所有查询完成
+            const productsWithCartIds = await Promise.all(productPromisesWithCartIds);
+
+            context.body = {
+                list: productsWithCartIds,
+            };
+        } else {
+            context.body = {
+                list: [],
+            };
+        }
+    } catch (err) {
+        context.throw(err); // 捕获并抛出任何错误给上下文处理器
+    } finally {
+        next(); // 确保next()在所有情况下都被调用
     }
-    if (res) {
-        console.log('res', res);
-    }
-
-    context.body = {
-        list: res,
-
-    };
-
-    next();
 }
 async function getShoppingCardByUserIdController(context: any, next: any) {
     const { userId } = context.request.query;
@@ -74,7 +97,7 @@ async function updateShoppingCardController(context: any, next: any) {
 }
 async function createShoppingCardController(context: any, next: any) {
 
-    const { userId,productId,quantity, ...rest } = context.request.body;
+    const { userId, productId, quantity, ...rest } = context.request.body;
     console.log('context.request.body', context.request.body);
 
     if (!userId) {
@@ -87,13 +110,13 @@ async function createShoppingCardController(context: any, next: any) {
         quantity,
         ...rest
     };
-    
-        const res = await createShoppingCard(params);
 
-        if (!res) {
-            context.throw('新增错误');
-        }
-    
+    const res = await createShoppingCard(params);
+    console.log('res', res);
+    if (!res) {
+        context.throw('新增错误');
+    }
+
 
     context.body = {
         message: '加入成功',
@@ -101,18 +124,27 @@ async function createShoppingCardController(context: any, next: any) {
     };
     next();
 }
-async function deleteShoppingCardController (context: any, next: any) {
-    const { cartId, postData, ...rest } = context.request.body;
-    if (!cartId) {
+async function deleteShoppingCardController(context: any, next: any) {
+    const { cartIds, postData, ...rest } = context.request.body;
+    console.log('context.request.body', context.request.body);
+    if (!cartIds) {
         context.throw(new Error('缺少商品orderId'));
     }
-    
-    const res = await deleteShoppingCard(cartId);
-    if (res) {
-       
+   
+    const productPromisesWithCartIds = cartIds.map(async (cartId: number) => {
+        const product = await deleteShoppingCard(cartId);
+        // 将cartId与product信息合并
+        return {
+            ...product,
+          
+        };
+    });
+   
+    if (productPromisesWithCartIds) {
+
         context.body = {
-            message: res.message,
-            flag: res.flag,
+            message: '删除成功',
+            flag: true,
         };
         next();
     }

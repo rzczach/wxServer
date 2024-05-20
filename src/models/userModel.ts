@@ -14,14 +14,14 @@ export interface UserInfo {
 }
 const Users = sequelize.define('User', {
     userId: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
     },
     username: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    phoneNumber: DataTypes.NUMBER,
-    shippingAddressID: DataTypes.NUMBER,
+    phoneNumber: DataTypes.INTEGER,
+    shippingAddressID: DataTypes.INTEGER,
     profileImage: DataTypes.STRING,
     registrationTime: DataTypes.DATE,
     lastLoginTime: DataTypes.DATE,

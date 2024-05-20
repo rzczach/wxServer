@@ -6,6 +6,7 @@ import reviewsRouter from './reviews';
 import orderRouter from './order';
 import userAddressRouter from './userAddress';
 import orderDetailRouter from './orderDetail';
+import shoppingCart from './shoppingCart';
 
 
 
@@ -23,6 +24,7 @@ router.use(reviewsRouter.routes());
 router.use(orderRouter.routes());
 router.use(userAddressRouter.routes());
 router.use(orderDetailRouter.routes());
+router.use(shoppingCart.routes());
 
 
 export default router;

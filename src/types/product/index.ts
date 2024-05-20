@@ -86,4 +86,6 @@ export interface ProductInfo {
       * 包装
       */
      packing: string;
+     mainImg: string;
+     imgList: string;
 }

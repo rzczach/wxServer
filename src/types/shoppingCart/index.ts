@@ -4,4 +4,4 @@ export interface ShoppingCardData {
     productId: number; // 外键，关联到商品表的商品ID
     quantity: number; // 商品数量，默认为1
     addedTime: Date; // 商品加入购物车的时间，默认为当前时间戳
-  }
+}

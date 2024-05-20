@@ -39,6 +39,7 @@ const ShoppingCard = sequelize.define('ShoppingCard', {
         allowNull: false,
     },
 }, {
+    tableName: 'shoppingCard',
     timestamps: true, // 如果你的表没有 createdAt 和 updatedAt 字段，请设置为 false
     createdAt: 'addedTime',
 });
@@ -91,18 +92,23 @@ async function updateShoppingCard(cartId: number, newContent: Partial<ShoppingCa
     }
 }
 // 新增
-async function createShoppingCard(orderData: ShoppingCardData): Promise<ShoppingCardData> {
-    const newShoppingCard = await ShoppingCard.create({
-        ...orderData,
-    });
-    return newShoppingCard.toJSON();
+async function createShoppingCard(orderData: ShoppingCardData): Promise<ShoppingCardData | undefined> {
+    try {
+        const newShoppingCard = await ShoppingCard.create({
+            ...orderData,
+        });
+        console.log('newShoppingCard', newShoppingCard);
+        return newShoppingCard.toJSON();
+    } catch (e) {
+        console.log(e);
+    }
 }
 // 删除用户
 async function deleteShoppingCard(cartId: number): Promise<any> {
     const info = await findShoppingCardByCardId(cartId);
     if (info) {
-        const res = ShoppingCard.destroy({
-            where: { messageId: cartId },
+        const res = await ShoppingCard.destroy({
+            where: { cartId: cartId },
         });
         console.log(res);
         return {
