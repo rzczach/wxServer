@@ -4,5 +4,4 @@ export interface OrderDetailData {
     productId: number; // 商品ID，外键关联商品表
     quantity: number; // 商品数量
     unitPrice: number; // 商品单价，两位小数
-    discount: number; // 商品折扣金额，两位小数，默认为0
 }

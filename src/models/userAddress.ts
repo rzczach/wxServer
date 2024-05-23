@@ -90,7 +90,7 @@ async function findUserAddressByUserId(userId: number): Promise<UserAddressData[
     const messages = await UserAddress.findAll({
         where: { userId: id },
     });
-    console.log('messages', messages);
+   
     return messages.length ? messages.map(message => message.toJSON()) : null;
 }
 async function findUserAddressByAddressId(addressId: number): Promise<UserAddressData[] | null> {

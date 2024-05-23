@@ -41,9 +41,11 @@ const OrderDetail = sequelize.define('OrderDetails', {
         defaultValue: 0,
     },
 }, {
-    timestamps: false, // 如果表设计中没有时间戳字段，设置为 false
-    freezeTableName: true, // 防止 Sequelize 自动将表名变为复数形式
+    tableName: 'orderDetail',
+    timestamps: true,
 });
+Order.hasMany(OrderDetail, { foreignKey: 'orderId' });
+OrderDetail.belongsTo(Order, { foreignKey: 'orderId' });
 
 // 查找所有
 async function findOrderDetail(): Promise<OrderDetailData[]> {
@@ -84,7 +86,7 @@ async function updateOrderDetail(orderId: number, newContent: Partial<OrderDetai
     }
 }
 // 新增
-async function createOrderDetail(orderData: OrderDetailData): Promise<OrderDetailData> {
+async function createOrderDetail(orderData: Partial<OrderDetailData>): Promise<OrderDetailData> {
     const newOrderDetail = await OrderDetail.create({
         ...orderData,
     });

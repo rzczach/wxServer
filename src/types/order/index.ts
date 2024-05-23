@@ -27,7 +27,11 @@ export interface OrderData {
     deliveryAddress: string; // 配送地址，必填
     deliveryStatus: DeliveryStatus; // 配送状态，默认为Pending
     orderStatus: OrderStatus; // 订单状态，默认为Unpaid
-    shippingAddressId?: number; // 默认配送地址ID，关联用户地址表，可选
+    addressId?: number; // 默认配送地址ID，关联用户地址表，可选
+    cardsMessage?: string;// 贺卡留言
+    userMessage?: string;// 买家留言
+    buyUserName?: string;// 购买人联系人
+    buyPhoneNumber?: number;//购买人手机号
 }
 
 // 示例使用

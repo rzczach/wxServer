@@ -5,3 +5,5 @@ export interface ShoppingCardData {
     quantity: number; // 商品数量，默认为1
     addedTime: Date; // 商品加入购物车的时间，默认为当前时间戳
 }
+
+

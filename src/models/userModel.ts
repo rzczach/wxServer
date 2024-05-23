@@ -20,7 +20,10 @@ const Users = sequelize.define('User', {
     username: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    phoneNumber: DataTypes.INTEGER,
+    phoneNumber: {
+        type: DataTypes.STRING(20), // 或者适合你需求的长度
+        allowNull: false, // 根据实际情况
+    },
     shippingAddressID: DataTypes.INTEGER,
     profileImage: DataTypes.STRING,
     registrationTime: DataTypes.DATE,

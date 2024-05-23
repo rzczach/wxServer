@@ -27,9 +27,9 @@ async function getUserAddressController(context: any, next: any) {
 }
 async function getUserAddressByUserIdController(context: any, next: any) {
     const { userId } = context.request.query;
-    console.log('productId', userId);
-    const [error, res] = await to<any>(findUserAddressByUserId, userId);
-    console.log('error', error);
+    
+    const res = await findUserAddressByUserId(userId);
+
     if (res) {
         context.body = {
             info: res,
@@ -100,8 +100,8 @@ async function createUserAddressController(context: any, next: any) {
     
 
     context.body = {
-        message: '订单创建成功',
-        data: true,
+        message: '地址新增成功',
+        info: res
     };
     next();
 }

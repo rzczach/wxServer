@@ -2,8 +2,8 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../database/index'; // 引入数据库连接实例
 import { OrderData } from 'src/types/order';
 import { Users } from './userModel';
-import { Product } from './productModel';
 import { UserAddress } from './userAddress';
+
 
 // 定义 Order 模型
 const Order = sequelize.define('Order', {
@@ -18,14 +18,6 @@ const Order = sequelize.define('Order', {
         references: {
             model: Users, // 假设 Users 模型已定义
             key: 'userId'
-        }
-    },
-    productId: {
-        type: DataTypes.INTEGER,
-        allowNull: false, // NOT NULL
-        references: {
-            model: Product, // 商品信息
-            key: 'productId'
         }
     },
     orderNo: {
@@ -47,11 +39,11 @@ const Order = sequelize.define('Order', {
         type: DataTypes.STRING(200),
         allowNull: true // NOT NULL
     },
-    materialText: {
+    cardsMessage: {
         type: DataTypes.STRING(200),
         allowNull: true // NOT NULL
     },
-    packing: {
+    userMessage: {
         type: DataTypes.STRING(200),
         allowNull: true // NOT NULL
     },
@@ -63,19 +55,29 @@ const Order = sequelize.define('Order', {
         type: DataTypes.ENUM('Unpaid', 'Paid', 'Completed', 'Cancelled'),
         defaultValue: 'Unpaid' // DEFAULT 'Unpaid'
     },
-    shippingAddressId: {
+    addressId: {
         type: DataTypes.INTEGER,
         references: {
             model: UserAddress, // 假设 UserAddresses 模型已定义
             key: 'addressId'
         }
-    }
+    },
+    buyUserName: {
+        type: DataTypes.STRING(200),
+        allowNull: false // NOT NULL
+    },
+    buyPhoneNumber: {
+        type: DataTypes.STRING, // 或 DataTypes.STRING(15) 如果你想限制长度
+        allowNull: false,
+    },
 }, {
     tableName: 'order',
     timestamps: false, // 保持timestamps为true以启用createdAt和updatedAt
     createdAt: 'orderDate', // 将createdAt映射到createTime字段
     updatedAt: true,
 });
+
+
 
 // 查找所有
 async function findOrder(): Promise<OrderData[] | undefined> {

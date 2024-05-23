@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
 // sequelize.modelManager; // 正确的访问方式
 // sequelize.connectionManager;
 // 同步模型到数据库，这将会创建表
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ force: false, alter: true}).then(() => {
     console.log("Tables created successfully.");
 }).catch((error) => {
     console.error("Unable to create tables : ", error);

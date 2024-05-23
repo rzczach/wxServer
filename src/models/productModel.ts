@@ -33,16 +33,20 @@ const Product = sequelize.define('Product', {
 });
 
 // 查找所有商品
-async function findProduct(): Promise<ProductInfo[]> {
-    const result = await Product.findAll();
-    if (!result) {
-        return Promise.reject('err');
+async function findProduct(): Promise<ProductInfo[] | undefined> {
+    try {
+        const result = await Product.findAll();
+        if (!result) {
+            return Promise.reject('err');
+        }
+    
+        const list = result.map((d) => {
+            return d.toJSON();
+        })
+        return list;
+    } catch (e) {
+        console.log(e)
     }
-
-    const list = result.map((d) => {
-        return d.toJSON();
-    })
-    return list;
 }
 
 
