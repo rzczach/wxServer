@@ -63,7 +63,9 @@ const UserAddress = sequelize.define('UserAddresses', {
         defaultValue: DataTypes.NOW,
         allowNull: false,
     },
+
 }, {
+    tableName: 'UserAddresses',
     timestamps: true, // 因为我们自定义了时间戳字段，所以禁用默认的时间戳行为
     freezeTableName: true, // 防止Sequelize自动将表名转换为复数形式
     createdAt: 'creationTime', // 将createdAt映射到createTime字段
@@ -90,7 +92,7 @@ async function findUserAddressByUserId(userId: number): Promise<UserAddressData[
     const messages = await UserAddress.findAll({
         where: { userId: id },
     });
-   
+
     return messages.length ? messages.map(message => message.toJSON()) : null;
 }
 async function findUserAddressByAddressId(addressId: number): Promise<UserAddressData[] | null> {
@@ -102,12 +104,14 @@ async function findUserAddressByAddressId(addressId: number): Promise<UserAddres
 }
 
 // 修改某个 根
-async function updateUserAddress(addressId: number, newContent: Partial<UserAddressData>) {
+async function updateUserAddress(addressId: number, userId: number, newContent: Partial<UserAddressData>) {
     try {
         const id = Number(addressId);
-
-        const [affectedCount] = await UserAddress.update({ content: newContent }, {
-            where: { addressId: id },
+        console.log('addressId', addressId);
+        console.log('userId', userId);
+        console.log('newContent', newContent);
+        const [affectedCount] = await UserAddress.update(newContent , {
+            where: { addressId: id},
         }).catch(error => {
             console.error('Error updating product:', error);
             throw error; // 重新抛出异常，以便上层可以捕获
@@ -142,6 +146,37 @@ async function deleteUserAddress(addressId: number): Promise<any> {
         message: '未找到用户'
     }
 }
+// 删除用户
+async function setDefault(addressId: number, userId: number): Promise<any> {
+    const t = await sequelize.transaction(); // 开始事务
+
+    try {
+        // 将所有该用户的地址设置为非默认
+        await UserAddress.update(
+            { isDefault: false },
+            { where: { userId, isDefault: true }, transaction: t }
+        );
+
+        // 设置特定地址为默认
+        await UserAddress.update(
+            { isDefault: true },
+            { where: { addressId: addressId, userId }, transaction: t }
+        );
+
+        await t.commit(); // 如果前面的操作都成功，提交事务
+        return {
+            flag: true,
+            message: '设置成功'
+        };
+    } catch (error) {
+        console.log(error);
+        await t.rollback(); // 如果有任何错误，回滚事务
+        return {
+            flag: false,
+            message: '设置失败'
+        };
+    }
+}
 export {
     UserAddress,
     findUserAddress,
@@ -149,5 +184,6 @@ export {
     findUserAddressByAddressId,
     updateUserAddress,
     createUserAddress,
-    deleteUserAddress
+    deleteUserAddress,
+    setDefault
 }

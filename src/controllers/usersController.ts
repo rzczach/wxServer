@@ -55,17 +55,19 @@ async function getUserByPhoneController(context: any, next: any) {
 }
 
 async function updateUserController(context: any, next: any) {
-    const { id, ...rest } = context.request.body;
-    if (!id) {
-        context.throw('缺少Id');
+    const { userId, ...rest } = context.request.body;
+    if (!userId) {
+        context.throw('缺少用户id');
     }
-    const res = await updateUser(id, rest);
+    const res = await updateUser(userId, rest);
     console.log('res', res);
     if (res) {
         context.body = {
             data: res,
+            message: '修改成功',
         };
     } else {
+        
         context.throw(res);
     }
     next();

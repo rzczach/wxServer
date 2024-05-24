@@ -8,6 +8,7 @@ import {
     deleteUserAddressController,
     getUserAddressByAddressIdController,
     getUserAddressByUserIdController,
+    setDefaultController
 } from '../controllers/userAddressController';
 
 
@@ -20,6 +21,7 @@ pageRouter.get('/infoByUserId', getUserAddressByUserIdController);
 pageRouter.post('/update', updateUserAddressController);
 pageRouter.post('/create', createUserAddressController);
 pageRouter.post('/delete', deleteUserAddressController);
+pageRouter.post('/setDefault', setDefaultController);
 
 // ... 更多路由配置
 

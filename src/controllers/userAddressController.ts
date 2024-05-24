@@ -6,7 +6,8 @@ import {
     findUserAddressByAddressId,
     updateUserAddress,
     createUserAddress,
-    deleteUserAddress
+    deleteUserAddress,
+    setDefault
 } from '../models/userAddress';
 
 async function getUserAddressController(context: any, next: any) {
@@ -54,17 +55,23 @@ async function getUserAddressByAddressIdController(context: any, next: any) {
     next();
 }
 async function updateUserAddressController(context: any, next: any) {
-    const { addressId, ...rest } = context.request.body;
+    const { addressId, userId, ...rest } = context.request.body;
     if (!addressId) {
         context.throw('缺少Id');
     }
-    const res = await updateUserAddress(addressId, rest);
+    const res = await updateUserAddress(addressId, userId, rest);
     console.log('res', res);
     if (res) {
+     
         context.body = {
-            data: res,
+            message: '地址修改成功',
+            flag: res
         };
     } else {
+        context.body = {
+            message: '地址修改失败',
+            flag: res
+        };
         context.throw(res);
     }
     next();
@@ -121,6 +128,22 @@ async function deleteUserAddressController (context: any, next: any) {
         next();
     }
 }
+async function setDefaultController (context: any, next: any) {
+    const { addressId, userId, ...rest } = context.request.body;
+    if (!addressId) {
+        context.throw(new Error('缺少商品orderId'));
+    }
+    
+    const res = await setDefault(addressId, userId);
+    if (res) {
+       
+        context.body = {
+            message: res.message,
+            flag: res.flag,
+        };
+        next();
+    }
+}
 export {
     getUserAddressController,
     createUserAddressController,
@@ -128,4 +151,5 @@ export {
     deleteUserAddressController,
     getUserAddressByAddressIdController,
     getUserAddressByUserIdController,
+    setDefaultController
 }
