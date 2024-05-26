@@ -49,11 +49,16 @@ async function findUsers(): Promise<UserInfo[]> {
 
 // 通过用户id查找某个用户
 async function findUserById(userId: number): Promise<UserInfo | null> {
-    const id = Number(userId);
-    const userInstance = await Users.findOne({
-        where: { userId: id },
-    });
-    return userInstance ? userInstance.toJSON() : null;
+    try {
+        const id = Number(userId);
+        const userInstance = await Users.findOne({
+            where: { userId: id },
+        });
+        return userInstance ? userInstance.toJSON() : null;
+    } catch (err) {
+        console.log(err);
+        return null
+    }
 }
 // 通过手机号查找某个用户
 async function findUserByphone(phoneNumber: number): Promise<UserInfo | null> {

@@ -7,11 +7,24 @@ import {
     createProduct,
     updateProduct,
     findProductById,
-    deleteProduct
+    deleteProduct,
+    findProductByFlowerMaterial
 } from '../models/productModel';
 
 async function getProductController(context: any, next: any) {
-    const res = await findProduct();
+    const { category } = context.request.query;
+    const res = await findProduct({category});
+    // console.log('res',res);
+    if (res) {
+        context.body = {
+            list: res,
+        };
+    }
+    next();
+}
+async function getProductByFlowerMaterialController(context: any, next: any) {
+    const { flowerMaterial } = context.request.query;
+    const res = await findProductByFlowerMaterial({flowerMaterial});
     // console.log('res',res);
     if (res) {
         context.body = {
@@ -38,7 +51,6 @@ async function updateProductController(context: any, next: any) {
         context.throw('缺少Id');
     }
     const res = await updateProduct(productId, rest);
-    console.log('res', res);
     if (res) {
         context.body = res;
     } else {
@@ -49,7 +61,6 @@ async function updateProductController(context: any, next: any) {
 async function createProductController(context: any, next: any) {
 
     const { category, occasion, flowerMaterial, stemCount, price, originaPrice, detail, ...rest } = context.request.body;
-    console.log('context.request.body', context.request.body);
 
     if (!category) {
         context.throw(new Error('未填写材质'));
@@ -110,5 +121,6 @@ export {
     createProductController,
     updateProductController,
     deleteProductController,
-    getProductByIdController
+    getProductByIdController,
+    getProductByFlowerMaterialController
 }

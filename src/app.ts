@@ -17,7 +17,18 @@ app.use(bodyParser());
 
 // 将路由添加到应用
 app.use(router.routes()).use(router.allowedMethods());
-
+app.use(async (ctx, next) => {
+    try {
+        await next();
+    } catch (err: any) {
+        ctx.status = err.status || 500;
+        ctx.body = {
+            message: err.message,
+            error: err instanceof Error ? err.stack : '',
+        };
+        ctx.app.emit('error', err, ctx); // 如果你想进一步处理错误，可以在这里发出错误事件
+    }
+});
 app.use((context, next) => {
     if (context.body) {
         if (context.body.errcode === undefined) {
@@ -37,16 +48,16 @@ app.use((context, next) => {
 });
 // 启动数据库连接
 (async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Database connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
+    try {
+        await sequelize.authenticate();
+        console.log('Database connection has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
 })();
 
 // 启动服务
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

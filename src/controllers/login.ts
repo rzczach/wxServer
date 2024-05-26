@@ -2,14 +2,20 @@
 import { to } from '../../src/utils';
 import {
     findUserByphone,
+    updateUser,
    
 } from '../models/userModel';
 
 async function login(context: any, next: any) {
     const { phoneNumber, password } = context.request.query;
     const res = await findUserByphone(phoneNumber)
+   
     if (res) {
-        if (res.password === password) {
+        if (res.password.toString() === password.toString()) {
+            const a = await updateUser(res.userId, {
+                lastLoginTime: new Date(),
+            });
+            console.log('a', a);
             context.body = {
                 flag: true,
                 message: '登录成功',

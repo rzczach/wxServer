@@ -63,10 +63,12 @@ async function findOrderDetail(): Promise<OrderDetailData[]> {
 
 async function findOrderDetailByOrderId(orderId: number): Promise<OrderDetailData[] | null> {
     const id = Number(orderId);
-    const messages = await OrderDetail.findOne({
+    const messages = await OrderDetail.findAll({
         where: { orderId: id },
     });
-    return messages ? messages.toJSON() : null;
+    return messages ? messages.map((d) => {
+        return d.toJSON();
+    }) : null;
 }
 
 // 修改某个 根

@@ -104,7 +104,6 @@ async function findOrderByUserId(userId: number): Promise<OrderData[] | null> {
     const messages = await Order.findAll({
         where: { userId: id },
     });
-    console.log('messages', messages);
     return messages.length ? messages.map(message => message.toJSON()) : null;
 }
 async function findOrderByOrderId(orderId: number): Promise<OrderData[] | null> {
@@ -120,7 +119,7 @@ async function updateOrder(orderId: number, newContent: Partial<OrderData>) {
     try {
         const id = Number(orderId);
 
-        const [affectedCount] = await Order.update({ content: newContent }, {
+        const [affectedCount] = await Order.update(newContent, {
             where: { orderId: id },
         }).catch(error => {
             console.error('Error updating product:', error);
@@ -133,10 +132,8 @@ async function updateOrder(orderId: number, newContent: Partial<OrderData>) {
 }
 // 新增
 async function createOrder(orderData: Partial<OrderData>): Promise<OrderData | undefined> {
-    console.log('orderData', orderData);
     try {
         const newOrder = await Order.create(orderData);
-        console.log('newOrder', newOrder);
         return newOrder.toJSON();
     } catch (error) {
         console.error('创建订单时发生错误:', error);
@@ -151,7 +148,6 @@ async function deleteOrder(orderId: number): Promise<any> {
         const res = Order.destroy({
             where: { messageId: orderId },
         });
-        console.log(res);
         return {
             flag: true,
             message: '删除成功'

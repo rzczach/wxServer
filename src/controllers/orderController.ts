@@ -19,6 +19,7 @@ import {
     createOrderDetail,
     deleteOrderDetail
 } from '../models/orderDetail';
+import { findProductById } from '../models/productModel';
 
 async function getOrderController(context: any, next: any) {
     const res = await findOrder();
@@ -35,25 +36,38 @@ async function getOrderController(context: any, next: any) {
 }
 async function getOrderByUserIdController(context: any, next: any) {
     const { userId } = context.request.query;
-    console.log('productId', userId);
-    const [error, res] = await to<any>(findOrderByUserId, userId);
-    console.log('error', error);
+
+    const res = await findOrderByUserId(userId);
+
     if (res) {
+        const dataPromises = res.map(async (d) => {
+            let orderList = await findOrderDetailByOrderId(d.orderId);
+            const newOrderListPromise = orderList!.map(async (v) => {
+
+                const productInfo = await findProductById(v.productId);
+                return { ...v, ...productInfo };
+            })
+            const newOrderList = await Promise.all(newOrderListPromise);
+            return {
+                ...d,
+                orderList: newOrderList || []
+            }
+        });
+        // 等待所有查询完成
+        const data = await Promise.all(dataPromises);
         context.body = {
-            info: res,
+            list: data,
         };
     } else {
         context.body = {
-            info: [],
+            list: [],
         };
     }
     next();
 }
 async function getOrderByOrderIdController(context: any, next: any) {
     const { orderId } = context.request.query;
-    console.log('productId', orderId);
     const [error, res] = await to<any>(findOrderByOrderId, orderId);
-    console.log('error', error);
     if (res) {
         context.body = {
             info: res,
@@ -69,7 +83,7 @@ async function updateOrderController(context: any, next: any) {
         context.throw('缺少Id');
     }
     const res = await updateOrder(orderId, rest);
-    console.log('res', res);
+
     if (res) {
         context.body = {
             data: res,
@@ -80,11 +94,6 @@ async function updateOrderController(context: any, next: any) {
     next();
 }
 async function createOrderController(context: any, next: any) {
-
-
-    console.log('context.request.body', context.request.body);
-
-
 
     // 解构请求体中的数据
     const { userId, totalPrice, paymentMethod, deliveryAddress, cardMessage, productList, userMessage, addressId, buyUserName, buyPhoneNumber } = context.request.body;
@@ -123,7 +132,6 @@ async function createOrderController(context: any, next: any) {
                 unitPrice: price,
 
             });
-            console.log('a', a);
         }
         context.body = {
             message: '订单创建成功',

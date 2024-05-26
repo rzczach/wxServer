@@ -64,7 +64,6 @@ async function findShoppingCardByUserId(userId: number): Promise<ShoppingCardDat
     const messages = await ShoppingCard.findAll({
         where: { userId: id },
     });
-    console.log('messages', messages);
     return messages.length ? messages.map(message => message.toJSON()) : null;
 }
 async function findShoppingCardByCardId(cartId: number): Promise<ShoppingCardData[] | null> {
@@ -97,7 +96,6 @@ async function createShoppingCard(orderData: ShoppingCardData): Promise<Shopping
         const newShoppingCard = await ShoppingCard.create({
             ...orderData,
         });
-        console.log('newShoppingCard', newShoppingCard);
         return newShoppingCard.toJSON();
     } catch (e) {
         console.log(e);

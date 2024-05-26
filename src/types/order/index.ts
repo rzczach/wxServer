@@ -14,7 +14,6 @@ export enum DeliveryStatus {
     Delivered = 'Delivered',
     Cancelled = 'Cancelled',
 }
-
 // 订单模型的 TypeScript 类型定义
 export interface OrderData {
     orderId: number; // 主键，订单ID，自增

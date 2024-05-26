@@ -33,9 +33,40 @@ const Product = sequelize.define('Product', {
 });
 
 // 查找所有商品
-async function findProduct(): Promise<ProductInfo[] | undefined> {
+async function findProduct(params : {category: number | string}): Promise<ProductInfo[] | undefined> {
     try {
-        const result = await Product.findAll();
+        let result ;
+        if (params.category === '0' || params.category === 0 ) {
+            result = await Product.findAll();
+        } else {
+            result = await Product.findAll({
+                where: params
+            });
+        }
+        
+        if (!result) {
+            return Promise.reject('err');
+        }
+    
+        const list = result.map((d) => {
+            return d.toJSON();
+        })
+        return list;
+    } catch (e) {
+        console.log(e)
+    }
+}
+async function findProductByFlowerMaterial(params : {flowerMaterial: number | string}): Promise<ProductInfo[] | undefined> {
+    try {
+        let result ;
+        if (params.flowerMaterial === '0' || params.flowerMaterial === 0 ) {
+            result = await Product.findAll();
+        } else {
+            result = await Product.findAll({
+                where: params
+            });
+        }
+        
         if (!result) {
             return Promise.reject('err');
         }
@@ -87,13 +118,11 @@ async function createProduct(newProduct: Omit<ProductInfo, 'productId'>): Promis
 // 删除用户
 async function deleteProduct(productId: number): Promise<any> {
     const info = await findProductById(productId);
-    console.log('info',  info);
     if (info) {
         try {
             const res = Product.destroy({
                 where: { productId },
             });
-            console.log(res);
             return {
                 flag: true,
                 message: '删除成功'
@@ -113,5 +142,6 @@ export {
     updateProduct,
     createProduct,
     deleteProduct,
+    findProductByFlowerMaterial,
     Product,
 }

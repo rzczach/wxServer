@@ -86,7 +86,7 @@ async function createReview(productId: number, userId: number, rating: number, c
 async function getReviewsByProductId(productId: number) {
     try {
         const reviews = await UserReviews.findAll({
-            where: { ProductID: productId },
+            where: { productId: productId },
         });
         return reviews.length ? reviews.map(reviews => reviews.toJSON()) : null;
 
@@ -116,12 +116,9 @@ async function getReviewsByReviewId(reviewId: number) {
 
 async function updateReview(reviewId: number, updateData: Partial<UserReviewsData>) {
     try {
-        console.log('reviewId', reviewId);
-        console.log('updateData', updateData);
         const [affectedCount] = await UserReviews.update(updateData, {
             where: { ReviewID: reviewId },
         });
-        console.log('affectedCount', affectedCount);
         return affectedCount > 0;
 
     } catch (error) {

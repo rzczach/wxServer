@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { getProductController, createProductController, getProductByIdController, updateProductController, deleteProductController} from '../controllers/productController';
+import { getProductController, createProductController, getProductByIdController, updateProductController, deleteProductController, getProductByFlowerMaterialController} from '../controllers/productController';
 
 
 const pageRouter = new Router({
@@ -8,6 +8,7 @@ const pageRouter = new Router({
 
 pageRouter.get('/list', getProductController);
 pageRouter.get('/info', getProductByIdController);
+pageRouter.get('/infoByFlowerMaterial', getProductByFlowerMaterialController);
 pageRouter.post('/update', updateProductController);
 pageRouter.post('/create', createProductController);
 pageRouter.post('/delete', deleteProductController);

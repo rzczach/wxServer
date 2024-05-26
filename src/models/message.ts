@@ -48,7 +48,6 @@ async function findMessageByProductId(productId: number): Promise<MessageData[] 
     const messages = await Message.findAll({
         where: { productId: id },
     });
-    console.log('messages', messages);
     return messages.length ?  messages.map(message => message.toJSON()) : null;
 }
 async function findMessageByMessageId(messageId: number): Promise<MessageData[] | null> {
@@ -90,7 +89,6 @@ async function deleteMessage(messageId: number): Promise<any> {
         const res = Message.destroy({
             where: { messageId: messageId },
         });
-        console.log(res);
         return {
             flag: true,
             message: '删除成功'

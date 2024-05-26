@@ -107,9 +107,6 @@ async function findUserAddressByAddressId(addressId: number): Promise<UserAddres
 async function updateUserAddress(addressId: number, userId: number, newContent: Partial<UserAddressData>) {
     try {
         const id = Number(addressId);
-        console.log('addressId', addressId);
-        console.log('userId', userId);
-        console.log('newContent', newContent);
         const [affectedCount] = await UserAddress.update(newContent , {
             where: { addressId: id},
         }).catch(error => {

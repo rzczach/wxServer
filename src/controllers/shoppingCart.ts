@@ -53,9 +53,7 @@ async function getShoppingCardController(context: any, next: any) {
 }
 async function getShoppingCardByUserIdController(context: any, next: any) {
     const { userId } = context.request.query;
-    console.log('productId', userId);
     const [error, res] = await to<any>(findShoppingCardByUserId, userId);
-    console.log('error', error);
     if (res) {
         context.body = {
             info: res,
@@ -67,9 +65,7 @@ async function getShoppingCardByUserIdController(context: any, next: any) {
 }
 async function getShoppingCardByCardIdController(context: any, next: any) {
     const { cartId } = context.request.query;
-    console.log('cartId', cartId);
     const [error, res] = await to<any>(findShoppingCardByCardId, cartId);
-    console.log('error', error);
     if (res) {
         context.body = {
             info: res,
@@ -85,7 +81,6 @@ async function updateShoppingCardController(context: any, next: any) {
         context.throw('缺少Id');
     }
     const res = await updateShoppingCard(cartId, rest);
-    console.log('res', res);
     if (res) {
         context.body = {
             data: res,
@@ -98,7 +93,6 @@ async function updateShoppingCardController(context: any, next: any) {
 async function createShoppingCardController(context: any, next: any) {
 
     const { userId, productId, quantity, ...rest } = context.request.body;
-    console.log('context.request.body', context.request.body);
 
     if (!userId) {
         context.throw(new Error('缺少用户信息'));
@@ -112,7 +106,6 @@ async function createShoppingCardController(context: any, next: any) {
     };
 
     const res = await createShoppingCard(params);
-    console.log('res', res);
     if (!res) {
         context.throw('新增错误');
     }
@@ -126,7 +119,6 @@ async function createShoppingCardController(context: any, next: any) {
 }
 async function deleteShoppingCardController(context: any, next: any) {
     const { cartIds, postData, ...rest } = context.request.body;
-    console.log('context.request.body', context.request.body);
     if (!cartIds) {
         context.throw(new Error('缺少商品orderId'));
     }

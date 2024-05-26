@@ -12,6 +12,7 @@ import {
 
 /* eslint-disable @typescript-eslint/naming-convention */
 import { to } from '../../src/utils';
+import { findUserById } from '../models/userModel';
 
 
 async function getReviewsController(context: any, next: any) {
@@ -26,21 +27,28 @@ async function getReviewsController(context: any, next: any) {
 }
 async function getReviewsProductIdController(context: any, next: any) {
     const { productId } = context.request.query;
-    console.log('productId', productId);
-    const [error, res] = await to<any>(getReviewsByProductId, productId);
-    console.log('error', error);
+    const res = await getReviewsByProductId(productId);
     if (res) {
+        const dataPromise = res.map(async (v) => {
+            const userInfo = await findUserById(v.userId)
+            return {
+                ...v,
+                ...userInfo
+            }
+        });
+        const data = await Promise.all(dataPromise);
         context.body = {
-            info: res,
+            info: data,
         };
     } else {
-        context.throw(res);
+        context.body = {
+            info: [],
+        };
     }
     next();
 }
 async function getReviewsByReviewIdController(context: any, next: any) {
     const { reviewId } = context.request.query;
-    console.log('messageId', reviewId);
     const [error, res] = await to<any>(getReviewsByReviewId, reviewId);
 
     if (res) {
@@ -56,7 +64,6 @@ async function updateReviewsController(context: any, next: any) {
         context.throw('缺少reviewId');
     }
     const res = await updateReview(reviewId, rest);
-    console.log('res', res);
     if (res) {
         context.body = {
             data: res,
