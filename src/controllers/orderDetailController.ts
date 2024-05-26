@@ -31,9 +31,7 @@ async function getOrderDetailController(context: any, next: any) {
 
 async function getOrderDetailByOrderIdController(context: any, next: any) {
     const { orderId } = context.request.query;
-    console.log('orderId', orderId);
     const [error, res] = await to<any>(findOrderDetailByOrderId, orderId);
-    console.log('error', error);
     if (res) {
         context.body = {
             info: res,

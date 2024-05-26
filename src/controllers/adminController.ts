@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { to } from '../../src/utils';
+import { to } from '../utils';
 import {
     findUsers,
     findUserById,
@@ -7,7 +7,7 @@ import {
     updateUser,
     createUser,
     deleteUser,
-} from '../models/userModel';
+} from '../models/admin';
 
 async function getUserListController(context: any, next: any) {
     const [error, res] = await to<any>(findUsers);
@@ -76,7 +76,7 @@ async function updateUserController(context: any, next: any) {
     next();
 }
 async function createUserController(context: any, next: any) {
-    const { username, password, phoneNumber, email, profileImage, ...rest } = context.request.body;
+    const { username, password, phoneNumber, email, ...rest } = context.request.body;
     if (!phoneNumber) {
         context.throw(new Error('未填写用户信息'));
     }
@@ -86,11 +86,12 @@ async function createUserController(context: any, next: any) {
         password,
         phoneNumber,
         email,
-        profileImage,
+        
         ...rest
     };
 
     const userInfo = await findUserByphone(phoneNumber);
+    console.log('userInfo', userInfo);
     if (userInfo) {
         const result = await updateUser(rest.userId, params);
         context.body = {
@@ -113,12 +114,12 @@ async function createUserController(context: any, next: any) {
 }
 
 async function deleteUserController(context: any, next: any) {
-    const { userId, postData, ...rest } = context.request.body;
-    if (!userId) {
+    const { id, postData, ...rest } = context.request.body;
+    if (!id) {
         context.throw(new Error('缺少用户id'));
     }
 
-    const res = await deleteUser(userId);
+    const res = await deleteUser(id);
     if (res) {
 
         context.body = {

@@ -7,6 +7,7 @@ import orderRouter from './order';
 import userAddressRouter from './userAddress';
 import orderDetailRouter from './orderDetail';
 import shoppingCart from './shoppingCart';
+import admin from './admin';
 
 
 
@@ -25,6 +26,7 @@ router.use(orderRouter.routes());
 router.use(userAddressRouter.routes());
 router.use(orderDetailRouter.routes());
 router.use(shoppingCart.routes());
+router.use(admin.routes());
 
 
 export default router;

@@ -4,9 +4,9 @@ import {
     findUserByphone,
     updateUser,
    
-} from '../models/userModel';
+} from '../models/admin';
 
-async function login(context: any, next: any) {
+async function adminLogin(context: any, next: any) {
     const { phoneNumber, password } = context.request.query;
     const res = await findUserByphone(phoneNumber)
    
@@ -36,5 +36,5 @@ async function login(context: any, next: any) {
     next();
 }
 export {
-    login
+    adminLogin
 }
